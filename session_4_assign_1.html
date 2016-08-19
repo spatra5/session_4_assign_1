@@ -1,0 +1,170 @@
+<!-- Create an Application (using OOP) in JavaScript that records the details of all kinds of Vehicles.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="jquery-1.12.4.js">
+	</script>
+	<script>
+		function Vehicle(name, desc, vtype, cost){
+			this.name = name;
+			this.desc = desc;
+			this.vtype = vtype;
+			this.cost = cost;
+		
+		}
+		Vehicle.prototype = {			
+			getDetail : function() {				
+				return {					
+					name : this.name,
+					desc : this.desc,
+					vtype : this.vtype,
+					cost : this.cost
+				}
+			}
+		};
+		
+		function TwoWheelerVehicle(name, desc, vtype, cost){
+			Vehicle.call(this, name, desc, vtype, cost);
+			
+		}
+		TwoWheelerVehicle.prototype = Object.create(Vehicle.prototype);
+		TwoWheelerVehicle.prototype.constructor = TwoWheelerVehicle;
+		
+		
+		
+		function createTwoWheeler(newVehicle){
+			var tw = new TwoWheelerVehicle(newVehicle.name, newVehicle.desc, newVehicle.vtype, newVehicle.cost);
+			console.log(tw);
+			return tw;
+			
+		}
+		
+		function FourWheelerVehicle(name, desc, vtype, cost, fuel){
+			Vehicle.call(this, name, desc, vtype, cost);
+			this.fuel = fuel;
+			
+		}
+		FourWheelerVehicle.prototype = Object.create(Vehicle.prototype);
+		FourWheelerVehicle.prototype.constructor = FourWheelerVehicle;
+		
+		
+		
+		function createFourWheeler(newVehicle){
+			var tw = new FourWheelerVehicle(newVehicle.name, newVehicle.desc, newVehicle.vtype, newVehicle.cost, newVehicle.fuel);
+			console.log(tw);
+			return tw;
+			
+		}
+		function getNewVehicle(){
+			var newVehicle = {};
+			newVehicle.name = $("#txtvname").val();
+			newVehicle.desc = $("#txtvdesc").val();
+			newVehicle.cost = $("#txtvcost").val();
+			newVehicle.vtype = $("#txtvtype option:selected").text();
+			
+			return newVehicle;
+		}
+		function showNewVehicle(newVehicle){
+			$("#spanvname").html(newVehicle.name);
+			$("#spanvdesc").html(newVehicle.desc);
+			$("#spanvtype").html(newVehicle.vtype);
+			$("#spanvcost").html(newVehicle.cost);
+			
+			if(newVehicle.vtype == "Four Wheeler"){
+				console.log(newVehicle.fuel);
+				$("#spanftype").html(newVehicle.fuel).parent().show();
+				
+			}
+			else{
+				$("#spanftype").parent().hide();
+			}
+		}
+		
+		$(document).ready(function(){
+			
+			$("#txtvtype").change(function(e){	 
+				if($(this).val() == 2){
+					$("#txtftype").parent().show();
+				}
+				else{
+					$("#txtftype").parent().hide();
+				}
+			});
+			$("#btnsubmit").click(function(e){
+				e.preventDefault();
+				var newVehicle = getNewVehicle();
+				if($("#txtvtype").val() == 1){
+					showNewVehicle(createTwoWheeler(newVehicle));
+				}
+				else if($("#txtvtype").val() == 2){
+					if($("#txtftype").val() != 0){
+						newVehicle.fuel = $("#txtftype option:selected").text();
+				console.log(newVehicle.fuel);
+						showNewVehicle(createFourWheeler(newVehicle));
+					}
+					else{
+						alert("Please select a fuel type for the new four wheeler.")
+					}
+					
+				}
+				else{
+					alert("Please select a vehicle type.");
+				}
+				
+			});
+		});
+		
+	</script>
+	
+</head>
+<body>
+	
+	<h2>Vehicle Page</h2>
+	<h3>Vehicle Form : </h3>
+	<form>
+	<p><label>Vehicle Name : </label>
+		<input type="text" id="txtvname" placeholder="Name" /> </p>
+	<p><label>Vehicle Description : </label>
+		<input type="text" id="txtvdesc" placeholder="Description" /> </p>
+	<p><label>Cost per Kilometer : </label>
+		<input type="text" id="txtvcost" placeholder="Cost per Kilometer" /> </p>
+	<p><label>Vehicle Type : </label>
+		<select id="txtvtype">
+			<option value="0">Vehicle type</option>
+			<option value="1">Two Wheeler</option>
+			<option value="2">Four Wheeler</option>
+		</select>
+	</p>
+	<p style="display:none;"><label>Fuel Type : </label>
+		<select id="txtftype">
+			<option value="0">Fuel type</option>
+			<option value="1">CNG</option>
+			<option value="2">Petrol</option>
+		</select>
+	</p>
+	<button id="btnsubmit">Submit</button>
+	</form>
+	<h3>Vehicle Details</h3>	
+	<p>
+		<strong>Vehicle Name : </strong>
+		<span id="spanvname"/> </span>
+	</p>
+	<p>
+		<strong>Vehicle Description : </strong>
+		<span id="spanvdesc"/> </span>
+	</p>
+	<p>
+		<strong>Vehicle Type : </strong>
+		<span id="spanvtype"/> </span>
+	</p>
+	<p>
+		<strong>Cost per Kilometer : </strong>
+		<span id="spanvcost"/> </span>
+	</p>
+	<p style="display: none;">
+		<strong>Fuel type : </strong>
+		<span id="spanftype"/> </span>
+	</p>
+</body>
+</html>
